@@ -24,7 +24,6 @@ const App: React.FC = () => {
     return Array.from(new Set(combined));
   }, [state.customCategories]);
 
-  // Ensure current month budget is initialized correctly and synced with categories
   useEffect(() => {
     setState(prev => {
       const budgetIdx = prev.monthlyBudgets.findIndex(b => b.month === currentMonth);
@@ -156,45 +155,35 @@ const App: React.FC = () => {
     }
   };
 
+  const navItems = [
+    { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'budget', label: 'Budget', icon: Calendar },
+    { id: 'transactions', label: 'Activity', icon: ReceiptText },
+    { id: 'yearly', label: 'History', icon: BarChart3 },
+  ];
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-50">
-      <aside className="w-full md:w-64 bg-white border-r border-slate-200 p-6 flex flex-col sticky top-0 h-screen z-50">
+      {/* Sidebar for Desktop */}
+      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 p-6 flex-col sticky top-0 h-screen">
         <div className="flex items-center gap-3 mb-10">
           <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
             <Wallet className="w-6 h-6" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">ZenBudget</span>
+          <span className="text-xl font-bold tracking-tight text-slate-900">ZachBudget</span>
         </div>
 
         <nav className="space-y-1 flex-1">
-          <button 
-            onClick={() => setActiveTab('overview')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'overview' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
-          >
-            <LayoutDashboard className="w-5 h-5" />
-            Dashboard
-          </button>
-          <button 
-            onClick={() => setActiveTab('budget')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'budget' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
-          >
-            <Calendar className="w-5 h-5" />
-            Budget Planner
-          </button>
-          <button 
-            onClick={() => setActiveTab('transactions')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'transactions' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
-          >
-            <ReceiptText className="w-5 h-5" />
-            Transactions
-          </button>
-          <button 
-            onClick={() => setActiveTab('yearly')}
-            className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === 'yearly' ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
-          >
-            <BarChart3 className="w-5 h-5" />
-            History & Trends
-          </button>
+          {navItems.map(item => (
+            <button 
+              key={item.id}
+              onClick={() => setActiveTab(item.id as any)}
+              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === item.id ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
+            >
+              <item.icon className="w-5 h-5" />
+              {item.label}
+            </button>
+          ))}
         </nav>
 
         <div className="mt-auto space-y-4">
@@ -209,112 +198,145 @@ const App: React.FC = () => {
           </div>
           <button onClick={resetData} className="w-full flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-rose-500 text-xs font-bold transition-colors">
             <Settings className="w-4 h-4" />
-            Reset All Data
+            Reset Data
           </button>
         </div>
       </aside>
 
-      <main className="flex-1 p-6 md:p-10 overflow-y-auto">
-        <header className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
-          <div>
-            <h1 className="text-3xl font-bold text-slate-900">
-              {activeTab === 'budget' ? 'Budget Planner' : 'Family Finance'}
-            </h1>
-            <p className="text-slate-500">
-              {activeTab === 'budget' ? 'Plan your spending by category' : 'Global tracking & smart budgeting'}
-            </p>
+      {/* Header for Mobile */}
+      <header className="md:hidden bg-white border-b border-slate-200 p-4 sticky top-0 z-40 flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
+            <Wallet className="w-5 h-5" />
           </div>
-          <div className="flex items-center gap-3">
-             <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm">
-                <Calendar className="w-4 h-4 text-indigo-600" />
-                <span className="font-semibold text-slate-700">{new Date(currentMonth + "-01").toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-             </div>
-          </div>
-        </header>
+          <span className="font-bold text-slate-900">ZachBudget</span>
+        </div>
+        <input 
+          type="month" 
+          className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none"
+          value={currentMonth}
+          onChange={e => setCurrentMonth(e.target.value)}
+        />
+      </header>
 
-        {activeTab === 'overview' && (
-          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <SummaryCards 
-              transactions={state.transactions} 
-              monthlyBudgets={state.monthlyBudgets} 
-              currentMonth={currentMonth} 
-              allCategories={allCategories}
-            />
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-              <div className="lg:col-span-2 space-y-6">
-                <AiInsights transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} />
-                <Charts transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} allCategories={allCategories} />
-              </div>
-              <div className="lg:col-span-1 space-y-6">
-                <CategoryHealth currentMonth={currentMonth} monthlyBudgets={state.monthlyBudgets} transactions={state.transactions} allCategories={allCategories} />
-                <GoalTracker goals={state.goals} onAddGoal={(g) => setState(p => ({...p, goals: [...p.goals, {...g, id: crypto.randomUUID()}]}))} onUpdateProgress={handleUpdateGoal} />
-              </div>
+      {/* Main Content */}
+      <main className="flex-1 p-4 md:p-10 pb-24 md:pb-10 overflow-x-hidden">
+        <div className="max-w-7xl mx-auto">
+          <header className="hidden md:flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+            <div>
+              <h1 className="text-3xl font-bold text-slate-900 capitalize">
+                {activeTab === 'budget' ? 'Budget Planner' : `${activeTab} Overview`}
+              </h1>
+              <p className="text-slate-500">
+                {activeTab === 'budget' ? 'Plan your family spending' : 'Your complete financial picture'}
+              </p>
             </div>
-          </div>
-        )}
-
-        {activeTab === 'budget' && (
-          <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <BudgetTable 
-              currentMonth={currentMonth} 
-              monthlyBudgets={state.monthlyBudgets} 
-              transactions={state.transactions}
-              allCategories={allCategories}
-              onUpdateBudget={handleUpdateBudget} 
-              onAddCategory={handleAddCategory}
-            />
-          </div>
-        )}
-
-        {activeTab === 'transactions' && (
-          <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <CsvUploader allCategories={allCategories} onImport={handleImportTransactions} />
-              <TransactionForm allCategories={allCategories} currentMonth={currentMonth} onAddTransaction={handleAddTransaction} />
+            <div className="flex items-center gap-3">
+               <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm">
+                  <Calendar className="w-4 h-4 text-indigo-600" />
+                  <span className="font-semibold text-slate-700">{new Date(currentMonth + "-01").toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+               </div>
             </div>
-            <TransactionList transactions={state.transactions} allCategories={allCategories} onDelete={handleDeleteTransaction} />
-          </div>
-        )}
+          </header>
 
-        {activeTab === 'yearly' && (
-          <div className="space-y-8 animate-in fade-in duration-300">
-             <Charts transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} allCategories={allCategories} />
-             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                  <History className="w-6 h-6 text-indigo-600" /> 
-                  Multi-Month Comparison
-                </h3>
-                <div className="overflow-x-auto">
-                   <table className="w-full text-left">
-                      <thead>
-                        <tr className="text-xs font-bold text-slate-400 uppercase border-b border-slate-50">
-                          <th className="py-4 px-4">Month</th>
-                          <th className="py-4 px-4">Income</th>
-                          <th className="py-4 px-4">Expenses</th>
-                          <th className="py-4 px-4">Net Savings</th>
-                        </tr>
-                      </thead>
-                      <tbody className="divide-y divide-slate-50">
-                        {[...state.monthlyBudgets].sort((a,b) => b.month.localeCompare(a.month)).map(mb => {
-                           const mTrans = state.transactions.filter(t => t.date.startsWith(mb.month));
-                           const inc = mTrans.filter(t => t.type === 'income').reduce((s,t) => s+t.amount, 0);
-                           const exp = mTrans.filter(t => t.type === 'expense').reduce((s,t) => s+t.amount, 0);
-                           return (
-                             <tr key={mb.month} className="hover:bg-slate-50">
-                                <td className="py-4 px-4 font-bold">{mb.month}</td>
-                                <td className="py-4 px-4 text-emerald-600 font-bold">${inc.toLocaleString()}</td>
-                                <td className="py-4 px-4 text-rose-600 font-bold">${exp.toLocaleString()}</td>
-                                <td className="py-4 px-4 font-black text-indigo-600">${(inc-exp).toLocaleString()}</td>
-                             </tr>
-                           )
-                        })}
-                      </tbody>
-                   </table>
+          {activeTab === 'overview' && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <SummaryCards 
+                transactions={state.transactions} 
+                monthlyBudgets={state.monthlyBudgets} 
+                currentMonth={currentMonth} 
+                allCategories={allCategories}
+              />
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <div className="lg:col-span-2 space-y-6">
+                  <AiInsights transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} />
+                  <Charts transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} allCategories={allCategories} />
                 </div>
-             </div>
-          </div>
-        )}
+                <div className="lg:col-span-1 space-y-6">
+                  <CategoryHealth currentMonth={currentMonth} monthlyBudgets={state.monthlyBudgets} transactions={state.transactions} allCategories={allCategories} />
+                  <GoalTracker goals={state.goals} onAddGoal={(g) => setState(p => ({...p, goals: [...p.goals, {...g, id: crypto.randomUUID()}]}))} onUpdateProgress={handleUpdateGoal} />
+                </div>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'budget' && (
+            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <BudgetTable 
+                currentMonth={currentMonth} 
+                monthlyBudgets={state.monthlyBudgets} 
+                transactions={state.transactions}
+                allCategories={allCategories}
+                onUpdateBudget={handleUpdateBudget} 
+                onAddCategory={handleAddCategory}
+              />
+            </div>
+          )}
+
+          {activeTab === 'transactions' && (
+            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <TransactionForm allCategories={allCategories} currentMonth={currentMonth} onAddTransaction={handleAddTransaction} />
+                <CsvUploader allCategories={allCategories} onImport={handleImportTransactions} />
+              </div>
+              <TransactionList transactions={state.transactions} allCategories={allCategories} onDelete={handleDeleteTransaction} />
+            </div>
+          )}
+
+          {activeTab === 'yearly' && (
+            <div className="space-y-8 animate-in fade-in duration-300">
+               <Charts transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} allCategories={allCategories} />
+               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
+                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
+                    <History className="w-6 h-6 text-indigo-600" /> 
+                    Monthly History
+                  </h3>
+                  <div className="overflow-x-auto -mx-6">
+                     <table className="w-full text-left min-w-[500px]">
+                        <thead>
+                          <tr className="text-xs font-bold text-slate-400 uppercase border-b border-slate-50">
+                            <th className="py-4 px-6">Month</th>
+                            <th className="py-4 px-6">Income</th>
+                            <th className="py-4 px-6">Expenses</th>
+                            <th className="py-4 px-6">Savings</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-50">
+                          {[...state.monthlyBudgets].sort((a,b) => b.month.localeCompare(a.month)).map(mb => {
+                             const mTrans = state.transactions.filter(t => t.date.startsWith(mb.month));
+                             const inc = mTrans.filter(t => t.type === 'income').reduce((s,t) => s+t.amount, 0);
+                             const exp = mTrans.filter(t => t.type === 'expense').reduce((s,t) => s+t.amount, 0);
+                             return (
+                               <tr key={mb.month} className="hover:bg-slate-50">
+                                  <td className="py-4 px-6 font-bold">{mb.month}</td>
+                                  <td className="py-4 px-6 text-emerald-600 font-bold">${inc.toLocaleString()}</td>
+                                  <td className="py-4 px-6 text-rose-600 font-bold">${exp.toLocaleString()}</td>
+                                  <td className="py-4 px-6 font-black text-indigo-600">${(inc-exp).toLocaleString()}</td>
+                               </tr>
+                             )
+                          })}
+                        </tbody>
+                     </table>
+                  </div>
+               </div>
+            </div>
+          )}
+        </div>
       </main>
+
+      {/* Bottom Nav for Mobile */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50 pb-safe">
+        {navItems.map(item => (
+          <button 
+            key={item.id}
+            onClick={() => setActiveTab(item.id as any)}
+            className={`flex flex-col items-center gap-1 transition-all ${activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'}`}
+          >
+            <item.icon className="w-6 h-6" />
+            <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
+          </button>
+        ))}
+      </nav>
     </div>
   );
 };
