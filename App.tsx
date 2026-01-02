@@ -163,6 +163,12 @@ const App: React.FC = () => {
     { id: 'yearly', label: 'Trends', icon: BarChart3 },
   ];
 
+  const displayMonth = useMemo(() => {
+    // Ensure we parse the YYYY-MM string correctly for display
+    const [year, month] = currentMonth.split('-').map(Number);
+    return new Date(year, month - 1).toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  }, [currentMonth]);
+
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-slate-50 text-slate-900">
       {/* Sidebar for Desktop */}
@@ -195,7 +201,7 @@ const App: React.FC = () => {
             <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Viewing Period</label>
             <input 
               type="month" 
-              className="w-full bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-indigo-500 transition-colors"
+              className="w-full bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-indigo-500 transition-colors cursor-pointer"
               value={currentMonth}
               onChange={e => setCurrentMonth(e.target.value)}
             />
@@ -218,7 +224,7 @@ const App: React.FC = () => {
         <div className="flex items-center gap-2">
            <input 
             type="month" 
-            className="bg-slate-100 border-none rounded-xl px-3 py-2 text-xs font-black text-indigo-600 outline-none"
+            className="bg-slate-100 border-none rounded-xl px-3 py-2 text-xs font-black text-indigo-600 outline-none cursor-pointer"
             value={currentMonth}
             onChange={e => setCurrentMonth(e.target.value)}
           />
@@ -238,7 +244,7 @@ const App: React.FC = () => {
             </div>
             <div className="bg-white border-2 border-slate-100 px-6 py-4 rounded-3xl flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
                <Calendar className="w-5 h-5 text-indigo-600" />
-               <span className="font-black text-slate-800 text-lg">{new Date(currentMonth + "-01").toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
+               <span className="font-black text-slate-800 text-lg">{displayMonth}</span>
             </div>
           </header>
 
