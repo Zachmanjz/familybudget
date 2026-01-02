@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { LayoutDashboard, ReceiptText, Calendar, Wallet, History, BarChart3, Settings } from 'lucide-react';
-import { Transaction, MonthlyBudget, BudgetState, CategoryType, SavingsGoal } from './types';
+import { LayoutDashboard, ReceiptText, Calendar, Wallet, History, BarChart3, Settings, PlusCircle } from 'lucide-react';
+import { Transaction, MonthlyBudget, BudgetState, CategoryType } from './types';
 import { loadState, saveState } from './utils/storage';
 import { CORE_CATEGORIES, DEFAULT_BUDGETS } from './constants';
 import SummaryCards from './components/SummaryCards';
@@ -156,103 +156,105 @@ const App: React.FC = () => {
   };
 
   const navItems = [
-    { id: 'overview', label: 'Dashboard', icon: LayoutDashboard },
+    { id: 'overview', label: 'Home', icon: LayoutDashboard },
     { id: 'budget', label: 'Budget', icon: Calendar },
     { id: 'transactions', label: 'Activity', icon: ReceiptText },
-    { id: 'yearly', label: 'History', icon: BarChart3 },
+    { id: 'yearly', label: 'Trends', icon: BarChart3 },
   ];
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row bg-slate-50">
+    <div className="min-h-screen flex flex-col md:flex-row bg-slate-50 text-slate-900">
       {/* Sidebar for Desktop */}
-      <aside className="hidden md:flex w-64 bg-white border-r border-slate-200 p-6 flex-col sticky top-0 h-screen">
-        <div className="flex items-center gap-3 mb-10">
-          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-200">
-            <Wallet className="w-6 h-6" />
+      <aside className="hidden md:flex w-72 bg-white border-r border-slate-200 p-8 flex-col sticky top-0 h-screen shadow-sm">
+        <div className="flex items-center gap-3 mb-12">
+          <div className="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100">
+            <Wallet className="w-7 h-7" />
           </div>
-          <span className="text-xl font-bold tracking-tight text-slate-900">ZachBudget</span>
+          <div>
+            <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-none">ZachBudget</h1>
+            <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Premium Finance</span>
+          </div>
         </div>
 
-        <nav className="space-y-1 flex-1">
+        <nav className="space-y-2 flex-1">
           {navItems.map(item => (
             <button 
               key={item.id}
               onClick={() => setActiveTab(item.id as any)}
-              className={`w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${activeTab === item.id ? 'bg-indigo-50 text-indigo-600' : 'text-slate-500 hover:bg-slate-50'}`}
+              className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl font-bold transition-all ${activeTab === item.id ? 'bg-indigo-600 text-white shadow-lg shadow-indigo-100' : 'text-slate-400 hover:bg-slate-50 hover:text-slate-600'}`}
             >
-              <item.icon className="w-5 h-5" />
+              <item.icon className={`w-5 h-5 ${activeTab === item.id ? 'text-white' : 'text-slate-400'}`} />
               {item.label}
             </button>
           ))}
         </nav>
 
         <div className="mt-auto space-y-4">
-          <div className="p-4 bg-slate-50 rounded-2xl">
-            <label className="block text-xs font-bold text-slate-400 uppercase mb-2">Viewing Period</label>
+          <div className="p-5 bg-slate-50 rounded-3xl border border-slate-100">
+            <label className="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3">Viewing Period</label>
             <input 
               type="month" 
-              className="w-full bg-white border border-slate-200 rounded-lg px-3 py-2 text-sm font-medium outline-none focus:ring-2 focus:ring-indigo-500"
+              className="w-full bg-white border-2 border-slate-100 rounded-xl px-4 py-3 text-sm font-bold outline-none focus:border-indigo-500 transition-colors"
               value={currentMonth}
               onChange={e => setCurrentMonth(e.target.value)}
             />
           </div>
-          <button onClick={resetData} className="w-full flex items-center gap-2 px-4 py-2 text-slate-400 hover:text-rose-500 text-xs font-bold transition-colors">
+          <button onClick={resetData} className="w-full flex items-center gap-2 px-5 py-3 text-slate-300 hover:text-rose-500 text-xs font-bold transition-colors">
             <Settings className="w-4 h-4" />
-            Reset Data
+            System Settings
           </button>
         </div>
       </aside>
 
       {/* Header for Mobile */}
-      <header className="md:hidden bg-white border-b border-slate-200 p-4 sticky top-0 z-40 flex items-center justify-between">
+      <header className="md:hidden bg-white border-b border-slate-100 p-4 sticky top-0 z-40 flex items-center justify-between shadow-sm">
         <div className="flex items-center gap-2">
-          <div className="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white">
-            <Wallet className="w-5 h-5" />
+          <div className="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-50">
+            <Wallet className="w-6 h-6" />
           </div>
-          <span className="font-bold text-slate-900">ZachBudget</span>
+          <span className="font-black text-xl text-slate-900">ZachBudget</span>
         </div>
-        <input 
-          type="month" 
-          className="bg-slate-50 border border-slate-200 rounded-lg px-2 py-1 text-xs font-bold outline-none"
-          value={currentMonth}
-          onChange={e => setCurrentMonth(e.target.value)}
-        />
+        <div className="flex items-center gap-2">
+           <input 
+            type="month" 
+            className="bg-slate-100 border-none rounded-xl px-3 py-2 text-xs font-black text-indigo-600 outline-none"
+            value={currentMonth}
+            onChange={e => setCurrentMonth(e.target.value)}
+          />
+        </div>
       </header>
 
-      {/* Main Content */}
-      <main className="flex-1 p-4 md:p-10 pb-24 md:pb-10 overflow-x-hidden">
+      {/* Main Content Area */}
+      <main className="flex-1 p-4 md:p-12 pb-24 md:pb-12 overflow-x-hidden">
         <div className="max-w-7xl mx-auto">
-          <header className="hidden md:flex flex-col md:flex-row md:items-center justify-between gap-4 mb-10">
+          {/* Desktop Tab Title */}
+          <header className="hidden md:flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
             <div>
-              <h1 className="text-3xl font-bold text-slate-900 capitalize">
-                {activeTab === 'budget' ? 'Budget Planner' : `${activeTab} Overview`}
-              </h1>
-              <p className="text-slate-500">
-                {activeTab === 'budget' ? 'Plan your family spending' : 'Your complete financial picture'}
-              </p>
+              <span className="text-indigo-600 text-xs font-black uppercase tracking-[0.2em] mb-2 block">Monthly Summary</span>
+              <h2 className="text-4xl font-black text-slate-900 tracking-tight capitalize">
+                {activeTab === 'budget' ? 'Budget Planner' : `${activeTab} View`}
+              </h2>
             </div>
-            <div className="flex items-center gap-3">
-               <div className="bg-white border border-slate-200 px-4 py-2 rounded-xl flex items-center gap-2 shadow-sm">
-                  <Calendar className="w-4 h-4 text-indigo-600" />
-                  <span className="font-semibold text-slate-700">{new Date(currentMonth + "-01").toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
-               </div>
+            <div className="bg-white border-2 border-slate-100 px-6 py-4 rounded-3xl flex items-center gap-3 shadow-sm hover:shadow-md transition-shadow">
+               <Calendar className="w-5 h-5 text-indigo-600" />
+               <span className="font-black text-slate-800 text-lg">{new Date(currentMonth + "-01").toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
             </div>
           </header>
 
           {activeTab === 'overview' && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
               <SummaryCards 
                 transactions={state.transactions} 
                 monthlyBudgets={state.monthlyBudgets} 
                 currentMonth={currentMonth} 
                 allCategories={allCategories}
               />
-              <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
-                <div className="lg:col-span-2 space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                <div className="lg:col-span-8 space-y-8">
                   <AiInsights transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} />
                   <Charts transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} allCategories={allCategories} />
                 </div>
-                <div className="lg:col-span-1 space-y-6">
+                <div className="lg:col-span-4 space-y-8">
                   <CategoryHealth currentMonth={currentMonth} monthlyBudgets={state.monthlyBudgets} transactions={state.transactions} allCategories={allCategories} />
                   <GoalTracker goals={state.goals} onAddGoal={(g) => setState(p => ({...p, goals: [...p.goals, {...g, id: crypto.randomUUID()}]}))} onUpdateProgress={handleUpdateGoal} />
                 </div>
@@ -261,7 +263,7 @@ const App: React.FC = () => {
           )}
 
           {activeTab === 'budget' && (
-            <div className="animate-in fade-in slide-in-from-bottom-2 duration-300">
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
               <BudgetTable 
                 currentMonth={currentMonth} 
                 monthlyBudgets={state.monthlyBudgets} 
@@ -274,8 +276,8 @@ const App: React.FC = () => {
           )}
 
           {activeTab === 'transactions' && (
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                 <TransactionForm allCategories={allCategories} currentMonth={currentMonth} onAddTransaction={handleAddTransaction} />
                 <CsvUploader allCategories={allCategories} onImport={handleImportTransactions} />
               </div>
@@ -284,21 +286,21 @@ const App: React.FC = () => {
           )}
 
           {activeTab === 'yearly' && (
-            <div className="space-y-8 animate-in fade-in duration-300">
+            <div className="space-y-8 animate-in fade-in duration-500">
                <Charts transactions={state.transactions} monthlyBudgets={state.monthlyBudgets} currentMonth={currentMonth} allCategories={allCategories} />
-               <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 overflow-hidden">
-                  <h3 className="text-xl font-bold mb-6 flex items-center gap-2">
-                    <History className="w-6 h-6 text-indigo-600" /> 
-                    Monthly History
+               <div className="bg-white p-8 rounded-[2rem] shadow-sm border border-slate-100 overflow-hidden">
+                  <h3 className="text-2xl font-black mb-8 flex items-center gap-3">
+                    <History className="w-7 h-7 text-indigo-600" /> 
+                    Financial History
                   </h3>
-                  <div className="overflow-x-auto -mx-6">
-                     <table className="w-full text-left min-w-[500px]">
+                  <div className="overflow-x-auto -mx-8">
+                     <table className="w-full text-left min-w-[600px]">
                         <thead>
-                          <tr className="text-xs font-bold text-slate-400 uppercase border-b border-slate-50">
-                            <th className="py-4 px-6">Month</th>
-                            <th className="py-4 px-6">Income</th>
-                            <th className="py-4 px-6">Expenses</th>
-                            <th className="py-4 px-6">Savings</th>
+                          <tr className="text-[10px] font-black text-slate-400 uppercase tracking-widest border-b border-slate-50">
+                            <th className="py-6 px-8">Period</th>
+                            <th className="py-6 px-8">Total Income</th>
+                            <th className="py-6 px-8">Total Expenses</th>
+                            <th className="py-6 px-8">Net Savings</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-50">
@@ -306,12 +308,15 @@ const App: React.FC = () => {
                              const mTrans = state.transactions.filter(t => t.date.startsWith(mb.month));
                              const inc = mTrans.filter(t => t.type === 'income').reduce((s,t) => s+t.amount, 0);
                              const exp = mTrans.filter(t => t.type === 'expense').reduce((s,t) => s+t.amount, 0);
+                             const sav = inc - exp;
                              return (
-                               <tr key={mb.month} className="hover:bg-slate-50">
-                                  <td className="py-4 px-6 font-bold">{mb.month}</td>
-                                  <td className="py-4 px-6 text-emerald-600 font-bold">${inc.toLocaleString()}</td>
-                                  <td className="py-4 px-6 text-rose-600 font-bold">${exp.toLocaleString()}</td>
-                                  <td className="py-4 px-6 font-black text-indigo-600">${(inc-exp).toLocaleString()}</td>
+                               <tr key={mb.month} className="hover:bg-slate-50 group transition-colors">
+                                  <td className="py-6 px-8 font-black text-slate-900">{mb.month}</td>
+                                  <td className="py-6 px-8 text-emerald-600 font-black">${inc.toLocaleString()}</td>
+                                  <td className="py-6 px-8 text-rose-600 font-black">${exp.toLocaleString()}</td>
+                                  <td className={`py-6 px-8 font-black ${sav >= 0 ? 'text-indigo-600' : 'text-rose-700'}`}>
+                                    ${sav.toLocaleString()}
+                                  </td>
                                </tr>
                              )
                           })}
@@ -324,18 +329,28 @@ const App: React.FC = () => {
         </div>
       </main>
 
-      {/* Bottom Nav for Mobile */}
-      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 px-6 py-3 flex justify-between items-center z-50 pb-safe">
+      {/* Mobile Bottom Navigation Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 px-6 py-4 flex justify-between items-center z-50 pb-safe shadow-[0_-10px_30px_rgba(0,0,0,0.03)]">
         {navItems.map(item => (
           <button 
             key={item.id}
             onClick={() => setActiveTab(item.id as any)}
-            className={`flex flex-col items-center gap-1 transition-all ${activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'}`}
+            className={`flex flex-col items-center gap-1.5 transition-all relative ${activeTab === item.id ? 'text-indigo-600' : 'text-slate-400'}`}
           >
-            <item.icon className="w-6 h-6" />
-            <span className="text-[10px] font-bold uppercase tracking-wider">{item.label}</span>
+            {activeTab === item.id && (
+              <span className="absolute -top-4 w-12 h-1.5 bg-indigo-600 rounded-full animate-in slide-in-from-top-2" />
+            )}
+            <item.icon className={`w-6 h-6 ${activeTab === item.id ? 'scale-110' : ''} transition-transform`} />
+            <span className="text-[9px] font-black uppercase tracking-wider">{item.label}</span>
           </button>
         ))}
+        {/* Floating Add Shortcut on Mobile */}
+        <button 
+          onClick={() => setActiveTab('transactions')}
+          className="absolute -top-8 left-1/2 -translate-x-1/2 w-14 h-14 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-200 border-4 border-white active:scale-90 transition-transform"
+        >
+          <PlusCircle className="w-8 h-8" />
+        </button>
       </nav>
     </div>
   );
