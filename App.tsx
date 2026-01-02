@@ -16,7 +16,8 @@ import CategoryHealth from './components/CategoryHealth';
 
 const App: React.FC = () => {
   const [state, setState] = useState<BudgetState>(loadState());
-  const [currentMonth, setCurrentMonth] = useState(new Date().toISOString().slice(0, 7));
+  // Default to Nov 2025 to match the imported data
+  const [currentMonth, setCurrentMonth] = useState('2025-11');
   const [activeTab, setActiveTab] = useState<'overview' | 'budget' | 'transactions' | 'yearly'>('overview');
 
   const allCategories = useMemo(() => {
