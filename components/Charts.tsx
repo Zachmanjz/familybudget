@@ -98,13 +98,13 @@ const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, a
                 <PieChart>
                   <Pie
                     data={pieData}
-                    innerRadius={80}
-                    outerRadius={120}
+                    innerRadius={70}
+                    outerRadius={100}
                     paddingAngle={5}
                     dataKey="value"
                     stroke="none"
                     cx="50%"
-                    cy="45%"
+                    cy="50%"
                   >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={getCategoryColor(entry.name)} />
@@ -118,7 +118,7 @@ const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, a
                     verticalAlign="bottom" 
                     align="center" 
                     iconType="circle"
-                    wrapperStyle={{ paddingTop: '20px', fontSize: '11px', fontWeight: 'bold' }}
+                    wrapperStyle={{ paddingTop: '10px', fontSize: '11px', fontWeight: 'bold' }}
                   />
                 </PieChart>
               </ResponsiveContainer>

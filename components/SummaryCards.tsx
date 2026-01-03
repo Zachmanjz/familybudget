@@ -49,7 +49,7 @@ const SummaryCards: React.FC<Props> = ({ transactions, monthlyBudgets, currentMo
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-slate-500 text-sm font-medium">Net Balance</span>
+          <span className="text-slate-500 text-sm font-medium">Monthly Cash Flow</span>
           <div className="p-2 bg-blue-50 rounded-lg"><Wallet className="w-5 h-5 text-blue-600" /></div>
         </div>
         <div className="text-2xl font-bold text-slate-900">${balance.toLocaleString(undefined, { minimumFractionDigits: 0, maximumFractionDigits: 0 })}</div>
@@ -57,7 +57,7 @@ const SummaryCards: React.FC<Props> = ({ transactions, monthlyBudgets, currentMo
 
       <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
         <div className="flex items-center justify-between mb-2">
-          <span className="text-slate-500 text-sm font-medium">Budget Usage</span>
+          <span className="text-slate-500 text-sm font-medium">Spending Progress</span>
           <div className="p-2 bg-amber-50 rounded-lg"><Target className="w-5 h-5 text-amber-600" /></div>
         </div>
         <div className="text-2xl font-bold text-slate-900">{budgetUtilization.toFixed(1)}%</div>

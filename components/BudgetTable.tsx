@@ -45,19 +45,19 @@ const BudgetTable: React.FC<Props> = ({
     <div className="space-y-6">
       {/* Category Summary Header */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg">
-          <div className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1">Total Planned</div>
-          <div className="text-3xl font-black">${totalBudgeted.toLocaleString()}</div>
+        <div className="bg-indigo-600 rounded-2xl p-6 text-white shadow-lg min-w-0">
+          <div className="text-indigo-100 text-xs font-bold uppercase tracking-widest mb-1 truncate">Total Planned</div>
+          <div className="text-2xl sm:text-3xl font-black truncate">${totalBudgeted.toLocaleString()}</div>
         </div>
-        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm">
-          <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1">Total Actual</div>
-          <div className="text-3xl font-black text-slate-900">${totalActual.toLocaleString()}</div>
+        <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm min-w-0">
+          <div className="text-slate-400 text-xs font-bold uppercase tracking-widest mb-1 truncate">Total Actual</div>
+          <div className="text-2xl sm:text-3xl font-black text-slate-900 truncate">${totalActual.toLocaleString()}</div>
         </div>
-        <div className={`rounded-2xl p-6 border shadow-sm ${totalBudgeted - totalActual < 0 ? 'bg-rose-50 border-rose-100' : 'bg-emerald-50 border-emerald-100'}`}>
-          <div className={`${totalBudgeted - totalActual < 0 ? 'text-rose-600' : 'text-emerald-600'} text-xs font-bold uppercase tracking-widest mb-1`}>
+        <div className={`rounded-2xl p-6 border shadow-sm min-w-0 ${totalBudgeted - totalActual < 0 ? 'bg-rose-50 border-rose-100' : 'bg-emerald-50 border-emerald-100'}`}>
+          <div className={`${totalBudgeted - totalActual < 0 ? 'text-rose-600' : 'text-emerald-600'} text-xs font-bold uppercase tracking-widest mb-1 truncate`}>
             Remaining
           </div>
-          <div className={`text-3xl font-black ${totalBudgeted - totalActual < 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
+          <div className={`text-2xl sm:text-3xl font-black truncate ${totalBudgeted - totalActual < 0 ? 'text-rose-700' : 'text-emerald-700'}`}>
             ${(totalBudgeted - totalActual).toLocaleString()}
           </div>
         </div>

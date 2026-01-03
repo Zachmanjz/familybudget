@@ -105,8 +105,8 @@ const CsvUploader: React.FC<Props> = ({ allCategories, onImport }) => {
     <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100 mb-8">
       <div className="flex items-center justify-between mb-4">
         <div>
-          <h3 className="text-lg font-semibold">Smart CSV Import</h3>
-          <p className="text-sm text-slate-500">AI matches bank statements to categories.</p>
+          <h3 className="text-lg font-semibold">Automated Smart Import</h3>
+          <p className="text-sm text-slate-500">Upload bank files for instant tracking.</p>
         </div>
         <FileText className="w-8 h-8 text-slate-200" />
       </div>
@@ -149,8 +149,10 @@ const CsvUploader: React.FC<Props> = ({ allCategories, onImport }) => {
               <Upload className="w-6 h-6 text-indigo-600" />
             </div>
             <div className="text-center">
-              <span className="text-indigo-600 font-semibold">Upload bank CSV</span>
-              <p className="text-xs text-slate-400 mt-1 italic">Date, Description, and Amount columns are best.</p>
+              <span className="text-indigo-600 font-semibold">Upload Bank CSV</span>
+              <p className="text-xs text-slate-400 mt-1 italic leading-relaxed">
+                Requirements: Columns for <b>Date</b>, <b>Description</b>, <b>Category</b>, & <b>Amount</b>.
+              </p>
             </div>
           </>
         )}
