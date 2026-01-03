@@ -179,7 +179,7 @@ const App: React.FC = () => {
           </div>
           <div>
             <h1 className="text-2xl font-black tracking-tight text-slate-900 leading-none">ZachBudget</h1>
-            <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Premium Finance</span>
+            <span className="text-[10px] font-bold text-indigo-500 uppercase tracking-widest">Financial Freedom</span>
           </div>
         </div>
 
