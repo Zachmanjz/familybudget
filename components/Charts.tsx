@@ -1,7 +1,7 @@
 
 import React, { useMemo } from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell, PieChart, Pie, Legend, LineChart, Line } from 'recharts';
-import { Transaction, MonthlyBudget, CategoryType } from '../types';
+import { Transaction, MonthlyBudget, CategoryType, CategoryBudget } from '../types';
 import { getCategoryColor } from '../constants';
 
 interface Props {
@@ -12,15 +12,15 @@ interface Props {
 }
 
 const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, allCategories }) => {
-  const monthTransactions = transactions.filter(t => t.date.startsWith(currentMonth) && t.type === 'expense');
-  const budget = monthlyBudgets.find(b => b.month === currentMonth);
+  const monthTransactions = transactions.filter((t: Transaction) => t.date.startsWith(currentMonth) && t.type === 'expense');
+  const budget = monthlyBudgets.find((b: MonthlyBudget) => b.month === currentMonth);
 
   const budgetVsActualData = useMemo(() => {
-    return allCategories.map(cat => {
-      const budgetItem = budget?.budgets.find(b => b.category === cat);
+    return allCategories.map((cat: string) => {
+      const budgetItem = budget?.budgets.find((b: CategoryBudget) => b.category === cat);
       const transactionTotal = monthTransactions
-        .filter(t => t.category === cat)
-        .reduce((sum, t) => sum + t.amount, 0);
+        .filter((t: Transaction) => t.category === cat)
+        .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
       
       const actual = budgetItem?.manualActual !== undefined ? budgetItem.manualActual : transactionTotal;
       const budgeted = budgetItem?.budgeted || 0;
@@ -38,16 +38,16 @@ const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, a
 
   const historicalTrends = useMemo(() => {
     const months = Array.from(new Set([
-      ...transactions.map(t => t.date.slice(0, 7)),
-      ...monthlyBudgets.map(mb => mb.month)
+      ...transactions.map((t: Transaction) => t.date.slice(0, 7)),
+      ...monthlyBudgets.map((mb: MonthlyBudget) => mb.month)
     ])).sort();
     
     return months.map(m => {
-      const mTrans = transactions.filter(t => t.date.startsWith(m));
-      const income = mTrans.filter(t => t.type === 'income').reduce((s, t) => s + t.amount, 0);
-      const expense = mTrans.filter(t => t.type === 'expense').reduce((s, t) => s + t.amount, 0);
+      const mTrans = transactions.filter((t: Transaction) => t.date.startsWith(m));
+      const income = mTrans.filter((t: Transaction) => t.type === 'income').reduce((s: number, t: Transaction) => s + t.amount, 0);
+      const expense = mTrans.filter((t: Transaction) => t.type === 'expense').reduce((s: number, t: Transaction) => s + t.amount, 0);
       return { month: m, income, expense };
-    }).slice(-12); // Show last 12 months
+    }).slice(-12);
   }, [transactions, monthlyBudgets]);
 
   return (
@@ -95,7 +95,7 @@ const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, a
           <div className="h-96 w-full relative">
             {pieData.length > 0 ? (
               <ResponsiveContainer width="100%" height="100%">
-                <PieChart>
+                <PieChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
                   <Pie
                     data={pieData}
                     innerRadius={70}
@@ -104,7 +104,7 @@ const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, a
                     dataKey="value"
                     stroke="none"
                     cx="50%"
-                    cy="50%"
+                    cy="45%"
                   >
                     {pieData.map((entry, index) => (
                       <Cell key={`cell-${index}`} fill={getCategoryColor(entry.name)} />
@@ -133,7 +133,7 @@ const Charts: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, a
         <h3 className="text-xl font-black mb-8 text-slate-900 tracking-tight">Efficiency Trend</h3>
         <div className="h-80 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <LineChart data={historicalTrends} margin={{ left: -20, right: 20 }}>
+            <LineChart data={historicalTrends} margin={{ top: 5, right: 20, bottom: 5, left: -20 }}>
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
               <XAxis dataKey="month" axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#cbd5e1', fontWeight: 700 }} />
               <YAxis axisLine={false} tickLine={false} tick={{ fontSize: 12, fill: '#cbd5e1', fontWeight: 700 }} />

@@ -2,8 +2,13 @@
 import { GoogleGenAI, Type } from "@google/genai";
 import { Transaction, MonthlyBudget, CategoryType } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || '' });
+// The GoogleGenAI client is initialized using the API key from process.env.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
+/**
+ * Analyzes budget data and provides actionable insights.
+ * Uses gemini-3-pro-preview for advanced financial reasoning.
+ */
 export const getBudgetInsights = async (
   transactions: Transaction[],
   monthlyBudgets: MonthlyBudget[],
@@ -31,12 +36,13 @@ export const getBudgetInsights = async (
 
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-pro-preview', // Complex Text Task: Advanced reasoning
       contents: prompt,
       config: {
         systemInstruction: "You are a professional financial advisor specializing in family budgeting. Keep advice practical, encouraging, and brief.",
       }
     });
+    // response.text is a getter, do not call as a function.
     return response.text || "No insights available at the moment.";
   } catch (error) {
     console.error("AI Insight Error:", error);
@@ -44,10 +50,14 @@ export const getBudgetInsights = async (
   }
 };
 
+/**
+ * Suggests a category for a given transaction description.
+ * Uses gemini-3-flash-preview for efficiency in simple classification.
+ */
 export const categorizeDescription = async (description: string, allCategories: string[]): Promise<CategoryType> => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-flash-preview', // Basic Text Task: Simple classification
       contents: `Categorize this transaction description into one of these: ${allCategories.join(', ')}. Description: "${description}"`,
       config: {
         responseMimeType: "application/json",
@@ -60,17 +70,23 @@ export const categorizeDescription = async (description: string, allCategories: 
         }
       }
     });
-    const result = JSON.parse(response.text || '{"category": "Other"}');
+    // Extract and trim text before parsing JSON.
+    const text = response.text?.trim() || '{"category": "Other"}';
+    const result = JSON.parse(text);
     return result.category as CategoryType;
   } catch (error) {
     return "Other";
   }
 };
 
+/**
+ * Parses raw bank CSV text into structured transaction objects.
+ * Uses gemini-3-pro-preview for complex data extraction and mapping.
+ */
 export const parseCsvWithAi = async (csvText: string, allCategories: string[]): Promise<Omit<Transaction, 'id'>[]> => {
   try {
     const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
+      model: 'gemini-3-pro-preview', // Complex Text Task: Reasoning and data extraction
       contents: `
         The following is a raw text from a bank CSV file. Parse it accurately into structured transactions.
         
@@ -107,7 +123,9 @@ export const parseCsvWithAi = async (csvText: string, allCategories: string[]): 
       }
     });
 
-    return JSON.parse(response.text || '[]');
+    // Extract and trim text before parsing JSON.
+    const text = response.text?.trim() || '[]';
+    return JSON.parse(text);
   } catch (error) {
     console.error("CSV AI Parse Error:", error);
     throw new Error("Failed to parse CSV file. Ensure it contains date, description and amount columns.");

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Transaction, MonthlyBudget } from '../types';
+import { Transaction, MonthlyBudget, CategoryBudget } from '../types';
 import { TrendingUp, TrendingDown, Wallet, Target } from 'lucide-react';
 
 interface Props {
@@ -11,17 +11,19 @@ interface Props {
 }
 
 const SummaryCards: React.FC<Props> = ({ transactions, monthlyBudgets, currentMonth, allCategories }) => {
-  const monthTransactions = transactions.filter(t => t.date.startsWith(currentMonth));
-  const income = monthTransactions.filter(t => t.type === 'income').reduce((sum, t) => sum + t.amount, 0);
+  const monthTransactions = transactions.filter((t: Transaction) => t.date.startsWith(currentMonth));
+  const income = monthTransactions
+    .filter((t: Transaction) => t.type === 'income')
+    .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
   
-  const currentBudget = monthlyBudgets.find(b => b.month === currentMonth);
-  const totalBudgeted = currentBudget?.budgets.reduce((sum, b) => sum + (b.budgeted || 0), 0) || 0;
+  const currentBudget = monthlyBudgets.find((b: MonthlyBudget) => b.month === currentMonth);
+  const totalBudgeted = currentBudget?.budgets.reduce((sum: number, b: CategoryBudget) => sum + (b.budgeted || 0), 0) || 0;
   
-  const expenses = allCategories.reduce((total, cat) => {
-    const budgetItem = currentBudget?.budgets.find(b => b.category === cat);
+  const expenses = allCategories.reduce((total: number, cat: string) => {
+    const budgetItem = currentBudget?.budgets.find((b: CategoryBudget) => b.category === cat);
     const transactionTotal = monthTransactions
-      .filter(t => t.category === cat && t.type === 'expense')
-      .reduce((sum, t) => sum + t.amount, 0);
+      .filter((t: Transaction) => t.category === cat && t.type === 'expense')
+      .reduce((sum: number, t: Transaction) => sum + t.amount, 0);
     
     return total + (budgetItem?.manualActual !== undefined ? budgetItem.manualActual : transactionTotal);
   }, 0);
